@@ -1,6 +1,6 @@
 # Kieran Lee - Jan 2023
 # Implements a Gibbs sampler for a finite mixture model with supposed 2
-# components.
+# components. Going to update for more components.
 
 # required to sample from dirichlet
 library(gtools)
