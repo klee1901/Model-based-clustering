@@ -1,2 +1,2 @@
 # Model-based-clustering
-Dissertation Project
+Implements Gibbs Sampling and Collapsed Gibbs Sampling algorithm for model-based clustering probelms. Includes various functions to compare the approachs.
