@@ -10,8 +10,8 @@ source('VItwoPartitions.r')
 N <- 1000
 
 timestamp()
-results <- foreach(sample = 1:6, .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
-  sampleClusts <- gaussian2Sample(N,c(-3,3))
+results <- foreach(sample = 1:3, .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
+  sampleClusts <- gaussian2Sample(N)
   outGibbs <- gibbsNIG(sampleClusts)
   outCGibbs <- collapsedGibbsNIG(sampleClusts)#,list(mu0=0,k0=0.2,a=8,b=10,alpha=1))
   output <- list('out'=list("sample"=sampleClusts,"gibbs"=outGibbs,"cGibbs"=outCGibbs))

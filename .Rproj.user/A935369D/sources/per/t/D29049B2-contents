@@ -14,12 +14,16 @@ library(coda)
 # loads mcclust which enables calculation of the psm
 library(mcclust.ext)
 
-gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=c(3,2))) {
+gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1)) {
   # sample is a list containing values ($sample) and true partition ($clustLabels)
   # hyperparameters is a list containing: mu0, k0, a, b, alpha.
   # set length of chain and burn-in
   iterations <- 2000
   burnIn <- 200
+  # set supposed number of components
+  G <- 2
+  # label components
+  labs <- 1:G
   # determine number of observations
   N <- length(sample$sample)
   # set hyperparameters
@@ -27,12 +31,12 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=c
   k0 <- hyperparameters$k0
   a <- hyperparameters$a
   b <- hyperparameters$b
-  alpha <- hyperparameters$alpha
+  alpha <- rep(hyperparameters$alpha,G)
   # initialize parameters
   weights <- rdirichlet(1,alpha)
   # use prior marginals
-  sigs <- rinvgamma(2,a,b)
-  mus <- rt2(2,mu0,(b/(a*k0))^0.5,2*a)
+  sigs <- rinvgamma(G,a,b)
+  mus <- rt2(G,mu0,(b/(a*k0))^0.5,2*a)
   # iterate a number of times algorithm 5.1
   clusters <- matrix(NA,iterations-burnIn,N)
   entropies <- matrix(0,1,iterations-burnIn)
@@ -42,16 +46,15 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=c
     # for each observation
     for (ind in 1:N) {
       # calculate likelihood it came from each group
-      g1lik <- weights[1]*dnorm(sample$sample[ind],mus[1],sigs[1]^0.5)
-      g2lik <- weights[2]*dnorm(sample$sample[ind],mus[2],sigs[2]^0.5)
-      zs[ind] <- sample(c(1,2),1,prob=c(g1lik,g2lik))
+      liks <- apply(cbind(weights[1,],mus,sigs),1,function(x) {x[1]*dnorm(sample$sample[ind],x[2],x[3]^0.5)})
+      zs[ind] <- sample(labs,1,prob=liks)
     }
     # compute n, ybar for both groups
-    ns <- c(sum(zs==1),sum(zs==2))
-    ybars <- c(sum(sample$sample[zs==1])/ns[1],sum(sample$sample[zs==2])/ns[2])
-    ybars2 <- c(sum(sample$sample[zs==1]^2)/ns[1],sum(sample$sample[zs==2]^2)/ns[2])
+    ns <- sapply(labs,function(lab) {sum(zs==lab)})
+    ybars <- sapply(labs,function(lab) {sum(sample$sample[zs==lab])/ns[lab]})
+    ybars2 <- sapply(labs,function(lab) {sum(sample$sample[zs==lab]^2)/ns[lab]})
     # For each group
-    for (g in 1:2) {
+    for (g in 1:G) {
       if (ns[g] != 0) {
         # update using posterior full conditionals
         sigs[g] <- rinvgamma(1,a+ns[g]/2+1/2,b+0.5*k0*(mus[g]-mu0)^2
