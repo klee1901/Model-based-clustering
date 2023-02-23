@@ -1,3 +1,5 @@
 *.Rproj
 *.Rhistory
+*.pdf
+.Rproj.user/
 .Rproj.user\
