@@ -3,7 +3,7 @@
     "path": "~/GitHub/Model-based-clustering/gibbsNIG.r",
     "project_path": "gibbsNIG.r",
     "type": "r_source",
-    "hash": "1582317082",
+    "hash": "2327170926",
     "contents": "",
     "dirty": false,
     "created": 1677103584166.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "0,0",
+        "cursorPosition": "1,71",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1677186577,
+    "lastKnownWriteTime": 1677257418,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1677186577379,
+    "last_content_update": 1677257418693,
     "read_only": false,
     "read_only_alternatives": []
 }
