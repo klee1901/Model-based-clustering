@@ -18,7 +18,7 @@ collapsedGibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=1
   # hyperparameters is a list containing: mu0, k0, a, b, alpha.
   # set length of chain and burn-in
   iterations <- 2000
-  burnIn <- 200
+  burnIn <- 500
   # determine number of observations
   N <- length(sample$sample)
   # set hyperparameters
@@ -137,5 +137,5 @@ collapsedGibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=1
   opt <- minVI(psm,cls.draw=clusters[(burnIn+1):iterations,],method='draws')
   # distance among opt$cl and sample$clustLabels
   #VItwoPartitions(sample$clustLabels, opt$cl)
-  output <- list("bestPartition"=opt,"clusters"=entropy[1,(burnIn+1):iterations],"entropies"=entropy[2,(burnIn+1):iterations],"mc"=clusters[(burnIn+1):iterations,])
+  output <- list("bestPartition"=opt,"clusters"=entropy[1,(burnIn+1):iterations],"entropies"=entropy[2,(burnIn+1):iterations])#,"mc"=clusters[(burnIn+1):iterations,])
 }

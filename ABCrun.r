@@ -1,0 +1,5 @@
+source('createSample.r')
+s <- gaussian2Sample(100)
+s <- gaussian2Sample()
+source('rejectionABC.r')
+rejectionABCNIG(s)

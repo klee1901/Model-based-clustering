@@ -19,7 +19,7 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
   # hyperparameters is a list containing: mu0, k0, a, b, alpha.
   # set length of chain and burn-in
   iterations <- 2000
-  burnIn <- 200
+  burnIn <- 500
   # set supposed number of components
   G <- 2
   # label components
@@ -84,5 +84,5 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
   psm <- comp.psm(clusters)
   # find optimal clustering
   opt <- minVI(psm,cls.draw=clusters,method='draws')
-  list('bestPartition'=opt,'entropies'=entropies,'mc'=clusters)
+  list('bestPartition'=opt,'entropies'=entropies)#,'mc'=clusters)
 }
