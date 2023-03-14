@@ -10,9 +10,9 @@ source('VItwoPartitions.r')
 source('MCMC_ABC.r')
 
 N <- 1000
-numOfSamples <- 6
+numOfSamples <- 20
 # adjust
-skip <- 24 #already processed samples
+skip <- 30 #already processed samples
 
 # Create samples
 results <- c(results[1:skip],sapply(1:numOfSamples,function(samNum){list('res'=list('sample'=gaussian2Sample(N),'gibbs'='','cGibbs'='','ABC'=''))}))
@@ -63,7 +63,7 @@ breakP <- 0
 skip <- 18
 numOfSamples <- 12
 timestamp()
-results <- c(results[1:(skip+breakP)],foreach(sampleNum = (skip+breakP+1):(skip+numOfSamples), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
+results <- c(results[1:(skip+breakP)],foreach(sampleNum = (skip+breakP+1):(skip+breakP+numOfSamples), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
   results[sampleNum]$res$ABC <- MCMC_ABC_NIG(results[sampleNum]$res$sample)
   end <- Sys.time()

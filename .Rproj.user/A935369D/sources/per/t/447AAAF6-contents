@@ -3,6 +3,9 @@
 # enable comparison. Will visualize VI distance to true partition and Effective
 # Sample Size (ESS). Can plot sample by sample or boxplot overview.
 
+source('VItwoPartitions.r')
+library(coda)
+
 n <- length(results)
 vis <- data.frame(rep(NA,3*n),rep(NA,3*n),c(rep('gibbs',n),rep('collapsedGibbs',n),rep('ABC-MCMC',n)),c(1:n,1:n,1:n),rep(NA,3*n))
 colnames(vis) <- c('dist','ESS','type','sample','time')

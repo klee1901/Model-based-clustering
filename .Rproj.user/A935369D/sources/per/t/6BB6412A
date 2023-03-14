@@ -3,7 +3,7 @@
     "path": "~/GitHub/Model-based-clustering/comparison2.r",
     "project_path": "comparison2.r",
     "type": "r_source",
-    "hash": "4206550232",
+    "hash": "3587081656",
     "contents": "",
     "dirty": false,
     "created": 1677102924105.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "67,18",
-        "scrollLine": "65"
+        "cursorPosition": "31,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1678665222,
+    "lastKnownWriteTime": 1678748443,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1678665222229,
+    "last_content_update": 1678748443493,
     "read_only": false,
     "read_only_alternatives": []
 }
