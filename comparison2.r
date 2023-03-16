@@ -10,12 +10,12 @@ source('VItwoPartitions.r')
 source('MCMC_ABC.r')
 
 N <- 1000
-numOfSamples <- 20
+numOfSamples <- 26
 # adjust
-skip <- 30 #already processed samples
+skip <- 24 #already processed samples
 
 # Create samples
-results <- c(results[1:skip],sapply(1:numOfSamples,function(samNum){list('res'=list('sample'=gaussian2Sample(N),'gibbs'='','cGibbs'='','ABC'=''))}))
+results <- c(results[1:skip],sapply(1:numOfSamples,function(samNum){list('res'=list('sample'=gaussian4Sample(N),'gibbs'='','cGibbs'='','ABC'=''))}))
 
 # Run Gibbs
 timestamp()
@@ -30,7 +30,7 @@ timestamp()
 save(results,file="compOne.Rdata")
 
 # Run Collapsed Gibbs
-breakP <- 9 #number of runs of algorithm
+breakP <- 27 #number of runs of algorithm
 timestamp()
 results <- c(results[1:skip],foreach(sampleNum = (skip+1):(skip+numOfSamples), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
