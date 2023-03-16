@@ -30,8 +30,9 @@ timestamp()
 save(results,file="compOne.Rdata")
 
 # Run Collapsed Gibbs
+breakP <- 9 #number of runs of algorithm
 timestamp()
-results <- c(results[1:skip],foreach(sampleNum = (skip+1):(numOfSamples+skip), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
+results <- c(results[1:skip],foreach(sampleNum = (skip+1):(skip+numOfSamples), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
   results[sampleNum]$res$cGibbs <- collapsedGibbsNIG(results[sampleNum]$res$sample)
   end <- Sys.time()

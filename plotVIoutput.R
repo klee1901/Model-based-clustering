@@ -28,9 +28,13 @@ for (result in results) {
 vis$ESS <- log(vis$ESS)
 
 library(ggplot2)
-# show all
-ggplot(vis,aes(sample))+geom_bar(aes(weight=dist,fill=type),position='dodge')+labs(y='VI distance from true partition',title='Comparison of gibbs and collapsed gibbs samplers \n in approximating the true partition of 6 random samples')
-ggplot(vis,aes(sample,ESS))+geom_point(aes(color=type))+labs(y='log(ESS)',title='Comparison of Effective Sample Size (ESS) \n on 6 random samples')
+library(dplyr)
+# show 5 at a time
+for (start in seq(1,n,5)) {
+  subData <- filter(vis,sample %in% c(start:(start+4)))
+  ggplot(subData,aes(sample))+geom_bar(aes(weight=dist,fill=type),position='dodge')+labs(y='VI distance from true partition',title='Comparison of gibbs and collapsed gibbs samplers \n in approximating the true partition of 5 random samples')
+}
+#ggplot(subData,aes(sample,ESS))+geom_point(aes(color=type))+labs(y='log(ESS)',title='Comparison of Effective Sample Size (ESS) \n on 6 random samples')
 
 # summarise
 ggplot(vis,aes(type,dist))+geom_boxplot(aes(color=type))+labs(x='algorithm',y='VI distance',title='Comparison of VI distances')+theme(legend.position='none')
