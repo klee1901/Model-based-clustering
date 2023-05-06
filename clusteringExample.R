@@ -72,3 +72,30 @@ ellipse(c(2,-1),matrix(c(0.8,0,0,0.3),2,2)^2,1,lty=2)
 ellipse(c(2,-1),matrix(c(1.6,0,0,0.6),2,2)^2,1,lty=2)
 ellipse(c(1,1),matrix(c(0.2,0,0,0.2),2,2)^2,1,col=2,lty=2)
 ellipse(c(1,1),matrix(c(0.4,0,0,0.4),2,2)^2,1,col=2,lty=2)
+
+## Connected clusters
+N <- 300
+xs <- matrix(NA,1,N)
+ys <- matrix(NA,1,N)
+xs[1:100]  <- runif(100,0,2)
+xs[101:200]  <- runif(100,0,1)
+ys[201:300]  <- runif(100,0,2)
+
+# Cluster 1
+for (i in 1:100) {
+  ys[i] <- (xs[i]-1)^2
+}
+# Cluster 2
+for (i in 101:200) {
+  ys[i] <- 2-xs[i]
+}
+# Cluster 3
+for (i in 201:300) {
+  xs[i] <- 3-(ys[i]-1)^2
+}
+# Apply noise
+ys <- ys + rnorm(300,0,0.1)
+plot(xs,ys,axes=F,xlab='',ylab='')
+for (k in 1:3) {
+  points(xs[(100*(k-1)+1):(100*k)],ys[(100*(k-1)+1):(100*k)],col=k+1)
+}

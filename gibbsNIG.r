@@ -21,7 +21,7 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
   iterations <- 2000
   burnIn <- 500
   # set supposed number of components
-  G <- 2
+  G <- length(table(sample$clustLabels))
   # label components
   labs <- 1:G
   # determine number of observations
@@ -73,11 +73,6 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
       clusters[i-burnIn,] <- zs
       temp_tb <- table(zs) / N
       entropies[i-burnIn] <- -sum(temp_tb * log(temp_tb))
-      #for (g in 1:2) {
-      #  if (ns[g] != 0) { 
-      #    entropies[i-burnIn] <- entropies[i-burnIn]-(ns[g]/N)*log(ns[g]/N)
-      #  }
-      #}
     }
   }
   # calculate posterior similarity matrix

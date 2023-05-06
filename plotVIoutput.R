@@ -34,9 +34,19 @@ for (start in seq(1,n,5)) {
   subData <- filter(vis,sample %in% c(start:(start+4)))
   ggplot(subData,aes(sample))+geom_bar(aes(weight=dist,fill=type),position='dodge')+labs(y='VI distance from true partition',title='Comparison of gibbs and collapsed gibbs samplers \n in approximating the true partition of 5 random samples')
 }
-#ggplot(subData,aes(sample,ESS))+geom_point(aes(color=type))+labs(y='log(ESS)',title='Comparison of Effective Sample Size (ESS) \n on 6 random samples')
+#ggplot(subData,aes(sample,ESS))+geom_point(aes(color=type))+labs(y='log(ESS)',title='Comparison of Effective Sample Size (ESS) \n on 5 random samples')
 
 # summarise
 ggplot(vis,aes(type,dist))+geom_boxplot(aes(color=type))+labs(x='algorithm',y='VI distance',title='Comparison of VI distances')+theme(legend.position='none')
 ggplot(vis,aes(type,ESS))+geom_boxplot(aes(color=type))+labs(x='Sampler type',y='log(ESS)',title='Comparison of ESS')+theme(legend.position='none')
 ggplot(vis,aes(type,time))+geom_boxplot(aes(color=type))+labs(x='Sampler type',y='Average time (secs) per iteration',title='Comparison of time per iteration')+theme(legend.position='none')
+
+# rug plot
+s <- gaussian2Sample(2000,c(-0.5,0.5))
+out <- gibbsNIG(s)
+dt <- data.frame(s$clustLabels,s$sample[1,],out$bestPartition$cl)
+names(dt) <- c('true','vals','pred')
+dt$true <- factor(dt$true)
+dt$pred <- factor(dt$pred)
+ggplot(dt)+geom_point(aes(vals,true,col=pred),shape=4,size=5)+labs(x='Value',y='True component (used to generate)',title='Comparision of components used to generate data\nand component allocation in optimal partition',color='Component\nallocated')
+#geom_jitter
