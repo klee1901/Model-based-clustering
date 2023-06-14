@@ -19,7 +19,7 @@ results <- c(results[1:skip],sapply(1:numOfSamples,function(samNum){list('res'=l
 
 # Run Gibbs
 timestamp()
-results <- c(results[1:skip],foreach(sampleNum = (skip+1):(numOfSamples+skip), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
+results <- c(foreach(sampleNum = 1:50, .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
   results[sampleNum]$res$gibbs <- gibbsNIG(results[sampleNum]$res$sample)
   end <- Sys.time()
@@ -30,9 +30,9 @@ timestamp()
 save(results,file="compOne.Rdata")
 
 # Run Collapsed Gibbs
-skip <- 36
-breakP <- 9 #number of runs of algorithm
-numOfSamples <- 14
+skip <- 47
+breakP <- 3 #number of runs of algorithm
+numOfSamples <- 50-skip
 timestamp()
 results <- c(results[1:skip],foreach(sampleNum = (skip+1):(skip+breakP), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
@@ -45,30 +45,33 @@ timestamp()
 save(results,file="compOne.Rdata")
 
 # Reload data
-load("compOne.Rdata")
+load("comp50.Rdata")
+skip <- 21
+breakP <- 3
+numOfSamples <- 29
 # Create break point
 breakP <- floor(numOfSamples/2)
 # Run ABC-MCMC
 timestamp()
 results <- c(results[1:skip],foreach(sampleNum = (skip+1):(skip+breakP), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
-  results[sampleNum]$res$ABC <- MCMC_ABC_NIG(results[sampleNum]$res$sample)
+  results[sampleNum]$res$ABC <- MCMC_ABC_NIG_1percent(results[sampleNum]$res$sample)
   end <- Sys.time()
   results[sampleNum]$res$ABC <- c(results[sampleNum]$res$ABC,'time'=end-start)
   results[sampleNum]
 },results[(skip+breakP+1):(numOfSamples+skip)])
 timestamp()
-save(results,file="compOne.Rdata")
+save(results,file="comp50.Rdata")
 
 # Part 2
 load("compOne.Rdata")
 breakP <- 0
-skip <- 18
-numOfSamples <- 12
+skip <- 31
+numOfSamples <- 19
 timestamp()
 results <- c(results[1:(skip+breakP)],foreach(sampleNum = (skip+breakP+1):(skip+breakP+numOfSamples), .packages = c('coda','nimble','gtools','wiqid','mcclust.ext'), .combine=c) %dopar% {
   start <- Sys.time()
-  results[sampleNum]$res$ABC <- MCMC_ABC_NIG(results[sampleNum]$res$sample)
+  results[sampleNum]$res$ABC <- MCMC_ABC_NIG_1percent(results[sampleNum]$res$sample)
   end <- Sys.time()
   results[sampleNum]$res$ABC <- c(results[sampleNum]$res$ABC,'time'=end-start)
   results[sampleNum]

@@ -1,4 +1,4 @@
-# Kieran Lee - Feb 2023
+# Kieran Lee - May 2023
 # Implements a Gibbs sampler for a finite mixture model with supposed G
 # components.
 
@@ -10,7 +10,7 @@ library(nimble)
 library(wiqid)
 # required to calculate ESS
 library(coda)
-# required for finding 'best' cluster
+# required for finding 'best' partition
 # loads mcclust which enables calculation of the psm
 library(mcclust.ext)
 
@@ -20,7 +20,7 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
   # set length of chain and burn-in
   iterations <- 2000
   burnIn <- 500
-  # set supposed number of components
+  # calculate true number of components
   G <- length(table(sample$clustLabels))
   # label components
   labs <- 1:G
@@ -37,19 +37,23 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
   # use prior marginals
   sigs <- rinvgamma(G,a,b)
   mus <- rt2(G,mu0,(b/(a*k0))^0.5,2*a)
-  # iterate a number of times algorithm 5.1
-  clusters <- matrix(NA,iterations-burnIn,N)
+  # set up matrix to store partition generated at each iteration (after burn-in)
+  partitions <- matrix(NA,iterations-burnIn,N)
+  # set up matrix to store partitions entropy at each iteration
   entropies <- matrix(0,1,iterations-burnIn)
+  # iterate a number of times algorithm 5.1
   for (i in 1:iterations) {
     zs <- matrix(1,1,N)
     prob <- runif(N)
     # for each observation
     for (ind in 1:N) {
-      # calculate likelihood it came from each group
+      # calculate likelihood it belongs to each component
       liks <- apply(cbind(weights[1,],mus,sigs),1,function(x) {x[1]*dnorm(sample$sample[ind],x[2],x[3]^0.5)})
+      # sample an allocated with probability proportional to the likelihood
+      # calculated above
       zs[ind] <- sample(labs,1,prob=liks)
     }
-    # compute n, ybar for both groups
+    # compute n, ybar for each group
     ns <- sapply(labs,function(lab) {sum(zs==lab)})
     ybars <- sapply(labs,function(lab) {sum(sample$sample[zs==lab])/ns[lab]})
     ybars2 <- sapply(labs,function(lab) {sum(sample$sample[zs==lab]^2)/ns[lab]})
@@ -67,17 +71,18 @@ gibbsNIG <- function(sample,hyperparameters = list(mu0=0,k0=0.2,a=8,b=10,alpha=1
         mus[g] <- rt2(1,mu0,(b/(a*k0))^0.5,2*a)
       }
     }
+    # update weight parameter using conditionals
     weights <- rdirichlet(1,alpha+ns)
-    # discount first 1000 iterations as 'burn in'
+    # discount first 500 iterations as 'burn in'
     if (i>burnIn){
-      clusters[i-burnIn,] <- zs
+      partitions[i-burnIn,] <- zs
       temp_tb <- table(zs) / N
       entropies[i-burnIn] <- -sum(temp_tb * log(temp_tb))
     }
   }
   # calculate posterior similarity matrix
-  psm <- comp.psm(clusters)
-  # find optimal clustering
-  opt <- minVI(psm,cls.draw=clusters,method='draws')
-  list('bestPartition'=opt,'entropies'=entropies)#,'mc'=clusters)
+  psm <- comp.psm(partitions)
+  # find optimal partition, depending on VI distance
+  opt <- minVI(psm,cls.draw=partitions,method='draws')
+  list('bestPartition'=opt,'entropies'=entropies)
 }

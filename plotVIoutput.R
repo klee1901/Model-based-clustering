@@ -22,7 +22,7 @@ for (result in results) {
   vis$time[i+n] <- 45*result$cGibbs$time/length(result$cGibbs$entropies)
   vis$dist[i+2*n] <- VItwoPartitions(result$sample$clustLabels,result$ABC$bestPartition$cl)
   vis$ESS[i+2*n] <- effectiveSize(as.vector(result$ABC$entropies))
-  vis$time[i+2*n] <- 45*result$ABC$time/length(result$ABC$entropies)
+  vis$time[i+2*n] <- 60*result$ABC$time/length(result$ABC$entropies)
   i <- i+1
 }
 vis$ESS <- log(vis$ESS)
